@@ -53,6 +53,10 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'captcha'=>['required','captcha']
+        ],[
+            'capcha.requred'=>'验证码不能为空',
+            'capcha.capcha'=>'验证码错误'
         ]);
     }
 
