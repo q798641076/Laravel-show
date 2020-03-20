@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/','PageController@root');
+Route::get('/','PageController@root')->name('/');
 
-Auth::routes();
+Auth::routes(['verify'=>true]);
 
 
