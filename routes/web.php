@@ -12,3 +12,7 @@
 */
 
 Route::get('/','PageController@root');
+
+Auth::routes();
+
+
