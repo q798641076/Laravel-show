@@ -11,8 +11,11 @@
 |
 */
 
-Route::get('/','PageController@root')->name('/')->middleware('verified');
+Route::get('/','PageController@root')->name('/');
 
 Auth::routes(['verify'=>true]);
 
 
+Route::group(['middleware' => ['auth','verified']], function () {
+    Route::resource('user-address', 'UserAddressController');
+});

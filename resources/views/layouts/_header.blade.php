@@ -44,7 +44,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="#">个人信息</a>
-              <a class="dropdown-item" href="#">收货地址</a>
+              <a class="dropdown-item" href="{{route('user-address.index')}}">收货地址</a>
               <div class="dropdown-divider"></div>
 
                 {!! Form::open(['route'=>['logout'],'method'=>'post']) !!}
