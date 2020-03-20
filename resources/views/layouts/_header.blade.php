@@ -46,9 +46,11 @@
               <a class="dropdown-item" href="#">个人信息</a>
               <a class="dropdown-item" href="#">收货地址</a>
               <div class="dropdown-divider"></div>
+
                 {!! Form::open(['route'=>['logout'],'method'=>'post']) !!}
                  <button class=" btn dropdown-item" type="submit">退出登录</button>
                 {!! Form::close() !!}
+
             </div>
           </li>
          @endguest

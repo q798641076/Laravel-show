@@ -61,6 +61,21 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="captcha" class="col-md-4 col-form-label text-md-right">验证码</label>
+
+                            <div class="col-md-6">
+                                <input id="captcha" type="captcha" class="form-control @error('captcha') is-invalid @enderror" name="captcha" required autocomplete="captcha">
+                                <img class="thumbnail captcha mt-3 mb-2 p-1" src="{{ captcha_src('flat') }}"
+                                onclick="this.src='/captcha/flat?'+Math.random()" title="点击图片重新获取验证码"
+                                style="border: 1px solid #ced4da; border-radius: 4px; cursor:poniter">
+                                @error('captcha')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
