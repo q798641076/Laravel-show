@@ -79,7 +79,7 @@
                 swal({
                     title:"删除成功啦",
                     icon:"success",
-                    buttons:['确定'],
+                    button:'确定',
                     text:"该地址挥之而去",
                 }).then(function(){
                     location.reload();
