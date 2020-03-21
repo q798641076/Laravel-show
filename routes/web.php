@@ -17,5 +17,5 @@ Auth::routes(['verify'=>true]);
 
 
 Route::group(['middleware' => ['auth','verified']], function () {
-    Route::resource('user-address', 'UserAddressController');
+    Route::resource('user_addresses', 'UserAddressController');
 });
