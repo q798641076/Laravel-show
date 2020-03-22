@@ -64,6 +64,14 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        // 添加的代码
+        'admin' => [
+            'driver'     => 'local',
+            'root'       => public_path('upload'),
+            'visibility' => 'public',
+            'url' => env('APP_URL').'/public/upload/',
+        ],
+
     ],
 
 ];
