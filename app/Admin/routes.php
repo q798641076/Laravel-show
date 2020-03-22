@@ -12,6 +12,8 @@ Route::group([
 
     $router->get('/', 'HomeController@index')->name('admin.home');
 
-    $router->get('users','UserController@index');
+    $router->get('users','UserController@index'); //管理用户
+
+    $router->get('products','ProductsController@index'); //管理商品
 
 });

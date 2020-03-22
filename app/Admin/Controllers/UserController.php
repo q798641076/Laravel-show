@@ -27,7 +27,7 @@ class UserController extends AdminController
     {
         $grid = new Grid(new User);
 
-        $grid->id('ID');
+        $grid->id('ID')->sortable();
 
         $grid->name('用户名');
 
