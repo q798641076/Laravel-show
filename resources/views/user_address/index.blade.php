@@ -77,7 +77,7 @@
             .then(function(){
                 //请求成功后：
                 swal({
-                    title:"删除成功啦",
+                    title:message,
                     icon:"success",
                     button:'确定',
                     text:"该地址挥之而去",

@@ -61,7 +61,7 @@ class UserAddressController extends Controller
 
         $this->pro->delete($user_address);
 
-        return [];
+        return ['message'=>'删除成功！'];
     }
 
 
