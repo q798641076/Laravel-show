@@ -19,3 +19,6 @@ Auth::routes(['verify'=>true]);
 Route::group(['middleware' => ['auth','verified']], function () {
     Route::resource('user_addresses', 'UserAddressController');
 });
+
+//商品展示
+Route::get('products','ProductsController@index')->name('products.index');

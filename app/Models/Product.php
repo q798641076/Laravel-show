@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ProductSku;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -19,5 +20,15 @@ class Product extends Model
     public function skus()
     {
         return $this->hasMany(ProductSku::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        //如果是完整路径，则返回原本字段
+        if(Str::startsWith($this->attributes['image'],['http://','https://'])){
+            return $this->attributes['image'];
+        }
+        //否则返回storage下的public路径
+        return \Storage::disk('public')->url($this->attributes['image']);
     }
 }

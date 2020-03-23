@@ -67,9 +67,9 @@ return [
         // 添加的代码
         'admin' => [
             'driver'     => 'local',
-            'root'       => public_path('upload'),
-            'visibility' => 'public',
-            'url' => env('APP_URL').'/upload/',
+            'root'       => public_path('storage'),
+            // 'visibility' => 'public',
+            // 'url' => env('APP_URL').'/storage',
         ],
 
     ],
