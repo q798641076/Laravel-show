@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/','PageController@root')->name('/');
+Route::redirect('/','products')->name('/');
 
 Auth::routes(['verify'=>true]);
 

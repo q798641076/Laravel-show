@@ -31,4 +31,19 @@ class Product extends Model
         //否则返回storage下的public路径
         return \Storage::disk('public')->url($this->attributes['image']);
     }
+
+    public function scopeOnSale($query)
+    {
+        return $query->where('on_sale',true);
+    }
+
+    public function scopeFormSelect($query,$like)
+    {
+        return $query->where('title','like',$like)
+                     ->orWhere('description','like',$like)
+                     ->orWhereHas('skus',function($query) use ($like){
+               $query->where('title','like',$like)
+                     ->orWhere('description','like',$like);
+        });
+    }
 }
