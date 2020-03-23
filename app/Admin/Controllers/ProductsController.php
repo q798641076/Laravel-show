@@ -55,6 +55,8 @@ class ProductsController extends AdminController
             });
         });
 
+
+
         return $grid;
     }
 
@@ -88,21 +90,37 @@ class ProductsController extends AdminController
      * Make a form builder.
      *
      * @return Form
+     * 新增和编辑
      */
-    // protected function form()
-    // {
-    //     $form = new Form(new Product);
+    protected function form()
+    {
+        $form = new Form(new Product);
 
-    //     $form->number('user_id', __('User id'));
-    //     $form->text('title', __('Title'));
-    //     $form->textarea('description', __('Description'));
-    //     $form->image('image', __('Image'));
-    //     $form->switch('on_sale', __('On sale'))->default(1);
-    //     $form->decimal('rating', __('Rating'))->default(5.00);
-    //     $form->number('sold_count', __('Sold count'));
-    //     $form->number('review_count', __('Review count'));
-    //     $form->decimal('price', __('Price'));
 
-    //     return $form;
-    // }
+        $form->text('title', __('商品名称'))->rules('required|min:2');
+
+        //富文本编辑器
+        $form->quill('description', __('商品描述'))->rules('required');
+
+        $form->image('image', __('商品图片'))->rules('required|image');
+
+        //单选框
+        $form->radio('on_sale', __('是否上架'))->options(['1'=>'是','0'=>'否'])->default(0);
+
+        //直接添加一个一对多关联模型
+        //第一个参数是该模型关联的属性
+        $form->hasMany('skus','SKU 列表', function(Form\NestedForm $form){
+            $form->text('title','sku名称')->rules('required');
+            $form->text('description','sku描述')->rules('required|min:2');
+            $form->text('price','单价')->rules('required|numeric|min:0.01');
+            $form->text('stock','剩余库存')->rules('required|integer|min:0');
+        });
+
+        //定义事件回调，当模型即将保存时会触发这个回调
+        $form->saving(function(Form $form){
+            $form->model()->price=collect($form->skus)->min('price') ? :0;
+        });
+
+        return $form;
+    }
 }
