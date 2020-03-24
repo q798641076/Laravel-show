@@ -22,6 +22,9 @@ Route::group(['middleware' => ['auth','verified']], function () {
     //收藏与取消收藏
     Route::post('products/{product}/favorite','ProductsController@favorite')->name('products.favorite');
     Route::delete('products/{product}/favorite','ProductsController@disFavorite')->name('products.disFavorite');
+
+    //个人收藏页面
+    Route::get('products/favorite','ProductsController@favoriteShow')->name('products.favoriteShow');
 });
 
 //商品展示

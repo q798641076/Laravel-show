@@ -75,4 +75,14 @@ class ProductsController extends Controller
 
         return [];
     }
+
+    //收藏页面
+    public function favoriteShow(Request $request)
+    {
+        $user=$request->user();
+
+        $products=$user->favoriteProducts()->paginate(16);
+
+        return view('products.favorite',compact('products'));
+    }
 }
