@@ -12,8 +12,10 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
+    //此类异常并不是因为我们系统本身的问题导致的，不会影响我们系统的运行，
+    //如果大量此类日志打印到日志文件里反而会影响我们去分析真正有问题的异常，因此需要屏蔽这个行为。
     protected $dontReport = [
-        //
+        InvalidRequestException::class
     ];
 
     /**

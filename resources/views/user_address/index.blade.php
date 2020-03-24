@@ -74,10 +74,10 @@
         }
         //调用删除接口，用id来拼接出请求的url
         axios.delete('/user_addresses/'+id)
-            .then(function(){
+            .then(function(data){
                 //请求成功后：
                 swal({
-                    title:message,
+                    title:data.data.message,
                     icon:"success",
                     button:'确定',
                     text:"该地址挥之而去",
