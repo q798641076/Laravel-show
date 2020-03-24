@@ -18,8 +18,14 @@ Auth::routes(['verify'=>true]);
 
 Route::group(['middleware' => ['auth','verified']], function () {
     Route::resource('user_addresses', 'UserAddressController');
+
+    //收藏与取消收藏
+    Route::post('products/{product}/favorite','ProductsController@favorite')->name('products.favorite');
+    Route::delete('products/{product}/favorite','ProductsController@disFavorite')->name('products.disFavorite');
 });
 
 //商品展示
 Route::get('products','ProductsController@index')->name('products.index');
 Route::get('products/{product}','ProductsController@show')->name('products.show');
+
+

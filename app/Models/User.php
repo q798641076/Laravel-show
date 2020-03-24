@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\UserAddress;
+use App\Models\Product;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -41,5 +43,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function addresses()
     {
         return $this->hasMany(UserAddress::class,'user_id');
+    }
+
+    //收藏商品
+    public function favoriteProducts()
+    {
+        //默认的中间表是不创建时间，需要自己设置withTimestamps
+        return $this->belongsToMany(Product::class, 'user_favorite_products')
+                    ->withTimestamps()
+                    ->orderBy('created_at','desc');
     }
 }

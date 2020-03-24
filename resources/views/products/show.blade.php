@@ -49,8 +49,12 @@
                         </div>
 
                         <div class="btn-group anthor-btn">
-                            <button class="btn btn-success">❤收藏</button>
-                            <button class="btn btn-danger">加入购物车</button>
+                            @if ($favorite)
+                            <button class="btn btn-danger disfavor-btn">取消收藏</button>
+                            @else
+                            <button class="btn btn-success favor-btn">❤收藏</button>
+                            @endif
+                            <button class="btn btn-primary">加入购物车</button>
                         </div>
                     </div>
                 </div>
@@ -74,11 +78,74 @@
 @section('scriptAfterJs')
 <script>
     $(document).ready(function(){
+        //boostrap提示工具
         $('[data-toggle=tooltip]').tooltip({trigger:'hover'});
+
+        //价格和库存变动
         $('.sku-btn').click(function(){
             $('.details .price span').text($(this).data('price'));
             $('.details .goods-count .stock').text("库存:"+$(this).data('stock')+"件");
         })
+
+        //收藏
+        $('.favor-btn').click(function(){
+            axios.post("{{route('products.favorite',$product->id)}}")
+            //操作成功
+                 .then(function(){
+                     swal({
+                         title:'操作成功',
+                         icon:'success',
+                         button:"确定"
+                     }).then(function(){
+                         location.reload();
+                     })
+                 } ,
+            //操作失败
+                 function(error){
+                     console.log(error.response)
+                     //如果返回时401则是没有登录
+                     if(error.response && error.response.status===401){
+                         swal({
+                             title:'请先登录',
+                             icon:'error',
+                             button:'确定'
+                         })
+                     }else if(error.response && error.response.status===403){
+                        swal({
+                             title:'请验证邮箱',
+                             icon:'error',
+                             button:'确定'
+                         })
+                     }
+                     else if(error.response && (error.response.data.msg||error.response.data.message)){
+                         swal({
+                             title: error.response.data.msg ? error.response.data.msg:error.response.data.message,
+                             icon: 'error',
+                             button:'确定'
+                         })
+                     }else{
+                         swal({
+                             title:'系统错误',
+                             icon:'error',
+                             button:'确定'
+                         })
+                     }
+                 })
+        })
+
+        $('.disfavor-btn').click(function(){
+            axios.delete("{{route('products.disFavorite',$product->id)}}")
+                 .then(function(){
+                     swal({
+                         title:'操作成功',
+                         icon:'success',
+                         button:'确定'
+                     }).then(function(){
+                         location.reload()
+                     })
+                 })
+        })
+
     })
 </script>
 

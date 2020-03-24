@@ -6,7 +6,7 @@ use App\Exceptions\InvalidRequestException;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
-
+use Illuminate\Foundation\Console\Presets\React;
 
 class ProductsController extends Controller
 {
@@ -32,12 +32,47 @@ class ProductsController extends Controller
         return view('products.index',compact('products','filters'));
     }
 
-    public function show(Product $product)
+    public function show(Product $product, Request $request)
     {
         //判断是否在售
         if(!$product->on_sale){
             throw new InvalidRequestException('商品未上架');
         }
-        return view('products.show',compact('product'));
+
+        //控制器把收藏状态注入模板中
+        $favorite=false;
+
+        if($user=$request->user()){
+
+            $favorite=boolval($user->favoriteProducts()->find($product->id));
+
+        }
+
+        return view('products.show',compact('product','favorite'));
+    }
+
+    public function favorite(Product $product,Request $request)
+    {
+        $user=$request->user();
+
+        //如果已经收藏
+        if($user->favoriteProducts()->find($product->id))
+        {
+           return [];
+        }
+
+        //用attach将user和product关联起来
+        $user->favoriteProducts()->attach($product);
+
+        return [];
+    }
+
+    public function disFavorite(Product $product, Request $request)
+    {
+        $user=$request->user();
+
+        $user->favoriteProducts()->detach($product);
+
+        return [];
     }
 }
