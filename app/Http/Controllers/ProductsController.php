@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 
+
 class ProductsController extends Controller
 {
     protected $pro;
@@ -28,5 +29,14 @@ class ProductsController extends Controller
             'order'=>$request->order
         ];
         return view('products.index',compact('products','filters'));
+    }
+
+    public function show(Product $product)
+    {
+        //判断是否在售
+        if(!$product->on_sale){
+            throw new \Exception('商品不存在');
+        }
+        return view('products.show',compact('product'));
     }
 }
