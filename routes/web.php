@@ -27,7 +27,9 @@ Route::group(['middleware' => ['auth','verified']], function () {
     Route::get('products/favorite','ProductsController@favoriteShow')->name('products.favoriteShow');
 
     //购物车
+    Route::get('cart','CartsController@index')->name('cart.index');
     Route::post('cart','CartsController@addCart')->name('cart.add');
+    Route::delete('cart/{sku}','CartsController@destroy')->name('cart.destroy');
 });
 
 //商品展示

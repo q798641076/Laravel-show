@@ -26,11 +26,8 @@
               </div>
             </li>
           </ul>
-            <form class="form-inline my-2 my-lg-0 mr-lg-5">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
         <ul class="navbar-nav navbar-right">
+            <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link mt-1"><i class="fa fa-shopping-cart"></i></a></li>
          @guest
             <li class="nav-item"><a href="{{route('login')}}" class='nav-link'>登录</a></li>
 

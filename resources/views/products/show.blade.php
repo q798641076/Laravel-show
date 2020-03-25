@@ -157,7 +157,7 @@
                     title:'添加成功',
                     icon:'success',
                 }).then(function(){
-                    location.reload()
+                    location.href='/cart/'
                 })
             }, function(error){
                 if(error.response.status===401){

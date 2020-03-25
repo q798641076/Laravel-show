@@ -1,0 +1,45 @@
+.cart-index-page {
+    .product-info {
+        display: flex;
+        flex-direction: row;
+        font-size: 12px;
+        .preview {
+            margin-right: 20px;
+            img {
+                max-width: 100px;
+                max-height: 100px;
+            }
+        }
+        .product-title a {
+            text-decoration: none;
+            color: black
+        }
+        .product-title,
+        .sku-title,
+        .waring {
+            display: block;
+        }
+        .not-on-sale {
+            .product-title,
+            .sku-title {
+                text-decoration: line-through;
+            }
+        }
+        .warning {
+            color: red
+        }
+    }
+    .price {
+        font-size: 12px;
+        font-weight: 700;
+        color: #3c3c3c;
+    }
+    .amount {
+        width: 50px;
+        border: 1px solid #eee;
+    }
+    .remain {
+        font-size: 10px;
+        color: #bcbcbc
+    }
+}
