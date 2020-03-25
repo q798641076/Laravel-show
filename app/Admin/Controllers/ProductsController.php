@@ -102,7 +102,7 @@ class ProductsController extends AdminController
         //富文本编辑器
         $form->quill('description', __('商品描述'))->rules('required');
 
-        $form->image('image', __('商品图片'))->rules('required|image');
+        $form->image('image', __('商品图片'))->rules('required|image|dimensions:max_height=150');
 
         //单选框
         $form->radio('on_sale', __('是否上架'))->options(['1'=>'是','0'=>'否'])->default(0);

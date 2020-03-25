@@ -4,6 +4,11 @@
 <div class="row">
     <div class="col-md-10 offset-md-1">
         <div class="card">
+            <div class="card-header">
+                <small>
+                       我的收藏：共<span class="text-danger"><b>{{$products->count()}}</b></span>件
+                </small>
+            </div>
             <div class="card-body">
                 <div class="row products-list">
                 @foreach ($products as $product)

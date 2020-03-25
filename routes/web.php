@@ -25,6 +25,9 @@ Route::group(['middleware' => ['auth','verified']], function () {
 
     //个人收藏页面
     Route::get('products/favorite','ProductsController@favoriteShow')->name('products.favoriteShow');
+
+    //购物车
+    Route::post('cart','CartsController@addCart')->name('cart.add');
 });
 
 //商品展示

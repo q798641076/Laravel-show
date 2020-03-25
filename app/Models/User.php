@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\UserAddress;
 use App\Models\Product;
+use App\Models\CartItem;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -52,5 +53,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Product::class, 'user_favorite_products')
                     ->withTimestamps()
                     ->orderBy('created_at','desc');
+    }
+
+    //购物车
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

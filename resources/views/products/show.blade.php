@@ -35,7 +35,7 @@
                                     data-stock={{$sku->stock}}
                                     data-toggle="tooltip"
                                     >
-                                        <input type="radio"  name="skus" value="{{$sku->id}}" autocomplete="off">
+                                        <input type="radio"  name="sku_id" value="{{$sku->id}}">
                                         {{$sku->title}}
                                     </button>
                                 @endforeach
@@ -44,7 +44,7 @@
 
                         <div class="goods-count">
                             <label>数量</label>
-                            <input type="text" class="form-control form-control-sm" value="1">
+                            <input type="text" class="form-control form-control-sm amount" name="amount">
                             <span>件</span><span class="stock"></span>
                         </div>
 
@@ -54,7 +54,7 @@
                             @else
                             <button class="btn btn-success favor-btn">❤收藏</button>
                             @endif
-                            <button class="btn btn-primary">加入购物车</button>
+                            <button class="btn btn-primary cart-btn"><i class="fa fa-shopping-cart" aria-hidden="true"></i>加入购物车</button>
                         </div>
                     </div>
                 </div>
@@ -102,7 +102,7 @@
                  } ,
             //操作失败
                  function(error){
-                     console.log(error.response)
+
                      //如果返回时401则是没有登录
                      if(error.response && error.response.status===401){
                          swal({
@@ -132,7 +132,7 @@
                      }
                  })
         })
-
+//取消收藏
         $('.disfavor-btn').click(function(){
             axios.delete("{{route('products.disFavorite',$product->id)}}")
                  .then(function(){
@@ -146,6 +146,40 @@
                  })
         })
 
+
+//加入购物车
+        $('.anthor-btn .cart-btn').click(function(){
+            axios.post("{{route('cart.add')}}",{
+                sku_id:$('.sku button.active input[name=sku_id]').val(),
+                amount:$('.goods-count .amount').val()
+            }).then(function(){
+                swal({
+                    title:'添加成功',
+                    icon:'success',
+                }).then(function(){
+                    location.reload()
+                })
+            }, function(error){
+                if(error.response.status===401){
+                    swal({
+                        title:'请先登录',
+                        icon:'error'
+                    })
+                }else if(error.response.status===422){
+
+                    var html;
+                     //第一个是数组，函数第一个参数下标，第二个参数为下标值
+                     $.each(error.response.data.errors, function(index, value){
+                        html=value[0];
+                     })
+                     swal({
+                         title:html,
+                         icon:'error'
+                     })
+                }
+
+            })
+        })
     })
 </script>
 
