@@ -47,9 +47,18 @@ class CartsController extends Controller
 
     public function destroy(ProductSku $sku , Request $request)
     {
-       
+
         //这样就不用验证是否是自己删除
         $request->user()->cartItems()->where('product_sku_id',$sku->id)->delete();
+
+        return [];
+    }
+
+    public function update(ProductSku $sku, Request $request)
+    {
+        $request->user()->cartItems()->where('product_sku_id',$sku->id)->update([
+            'amount'=>$request->amount
+        ]);
 
         return [];
     }
