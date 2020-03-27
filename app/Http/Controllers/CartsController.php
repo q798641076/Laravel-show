@@ -15,7 +15,10 @@ class CartsController extends Controller
         //productSku.product ：laravel支持用.的方式来获取多层关联的数据 预加载
         $cartItems=$request->user()->cartItems()->with('productSku.product')->get();
 
-        return view('carts.index',compact('cartItems'));
+        //注入我们的地址到购物车列表
+        $addresses=$request->user()->addresses()->orderBy('last_used_at')->get();
+
+        return view('carts.index',compact('cartItems','addresses'));
     }
 
     //添加购物车
@@ -62,4 +65,5 @@ class CartsController extends Controller
 
         return [];
     }
+
 }

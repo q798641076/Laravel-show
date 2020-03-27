@@ -31,6 +31,9 @@ Route::group(['middleware' => ['auth','verified']], function () {
     Route::post('cart','CartsController@addCart')->name('cart.add');
     Route::delete('cart/{sku}','CartsController@destroy')->name('cart.destroy');
     Route::put('cart/{sku}','CartsController@update')->name('cart.update');
+
+    //订单
+    Route::post('orders','OrdersController@store')->name('orders.store');
 });
 
 //商品展示

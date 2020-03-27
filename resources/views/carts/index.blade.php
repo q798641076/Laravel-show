@@ -9,6 +9,7 @@
                 购物车
             </div>
             <div class="card-body">
+                {{-- 购物车列表 --}}
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -56,7 +57,7 @@
                                 </div>
                             </td>
                             <td>
-                               <input type="text" class="form-control form-control-sm amount"
+                               <input type="text" class="form-control form-control-sm amount" name='amount'
                                value="{{$cart->amount}}" @if(!$cart->productSku->product->on_sale) disabled @endif
                                data-amount={{$cart->amount}} data-total={{$cart->productSku->stock}}>
                                 @if ($cart->productSku->stock<=3&&$cart->productSku->product->on_sale)
@@ -73,8 +74,41 @@
                     </tbody>
                 </table>
 
-                <div class="text-center font-weight-bold" style="font-size:20px;color:#cbcbcb">
+                {{-- 商品总价 --}}
+                <div class="text-center font-weight-bold mb-3" style="font-size:20px;color:#cbcbcb">
                     总价：￥<span class="priceTotal text-danger">0</span>
+                </div>
+
+                {{-- 提交订单 --}}
+                <div class="row col-md-10 offset-md-1">
+                    {!! Form::open(['class'=>'form-horizontal','role'=>'form','id'=>'form-order']) !!}
+                        {{-- 用户信息 --}}
+                        <div class="form-group row" id="order-address">
+                            <label for="form-address" class="col-form-label col-md-3 text-right">请选择信息</label>
+                            <div class="col-md-9 ">
+                                <select name="address"  class="form-control">
+                                @foreach ($addresses as $address)
+                                    <option value="{{$address->id}}">
+                                        {{$address->full_address}}{{$address->contact_name}}{{$address->contact_phone}}
+                                    </option>
+                                @endforeach
+                            </select>
+                            </div>
+
+                        </div>
+                        {{-- 备注 --}}
+                        <div class="form-group row" id="order-remark">
+                            <label  class="col-form-label col-md-3 text-right">备注</label>
+                            <div class="col-md-9">
+                                {!! Form::textarea('remark',null, ['class'=>'form-control','rows'=>3,'placeholder'=>'您的备注']) !!}
+                            </div>
+                        </div>
+
+
+                    {!! Form::close() !!}
+                    <div class="form-group col-md-6 text-right">
+                            <button class="btn btn-success" id="btn-create-order" >去付款</button>
+                        </div>
                 </div>
             </div>
         </div>
@@ -182,7 +216,53 @@
             })
         })
 
+            //提交订单
+            $('#btn-create-order').click(function(){
+                //获取地址和备注，将sku信息封装成数组
+                var rad={
+                    address_id:$('#order-address').find('select[name=address]').val(),
+                    items:[],
+                    remark:$('#order-remark').find('textarea[name=remark]').val()
+                };
+                //循环每一个tr，获取每一个sku_id
+                $('table tr[data-id]').each(function(){
+                    // 获取当前行的单选框
+                    var $checkbox = $(this).find('input[name=select][type=checkbox]');
+                    //如果没有被选中，或者不允许选择，就直接返回错误
+                    if($checkbox.prop('disabled') || !$checkbox.prop('checked')){
+                        return ;
+                    }
+                    //价格不用获取，因为后台sku数据表有
+                    $amount=$(this).find('input[name=amount]');
+                    if($amount.val()===0 || isNaN($amount.val()) ){
+                        swal('请检查数量','','error');
+                        return ;
+                    }
+                    //插入items
+                    rad.items.push({
+                        sku_id:$(this).data('id'),
+                        amount:$amount.val()
+                    });
 
+                });
+
+                //提交
+                axios.post("{{route('orders.store')}}",rad)
+                     .then(function(){
+                         swal('订单提交成功','','success')
+                     },function(error){
+                        if(error.response.status==422){
+                            //422说明后台验证出了问题
+                           $.each(error.response.data.errors,function(index,value){
+                            html=value[0]
+                           })
+                           swal({title:html,icon:'error'})
+                        }else{
+                            swal('系统错误','','error')
+                        }
+
+                     })
+            })
 })
     </script>
 @endsection
