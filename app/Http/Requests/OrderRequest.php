@@ -28,37 +28,32 @@ class OrderRequest extends FormRequest
         $rules=[
             'address_id'=>[
                 'required',
-                Rule::exists('user_addresses','id')->where('user_id',$this->user()->id)
+                Rule::exists('user_addresses','id')->where('user_id',$this->user()->id),
             ],
             'items'=>'required|array',
-            // 检查 items 数组下每一个子数组的 sku_id 参数
+            //判断items下面的索引值 索引为items.[].sku_id||amount ==$attribute
             'items.*.sku_id'=>[
-                'sku_id'=>[
                     'required',
                     function($attribute,$value,$fail){
-                        if(!$sku=ProductSku::find($value)->first()){
+                        if(!$sku=ProductSku::findOrFail($value)){
                             return $fail('商品不存在');
                         }
-                        if(!$sku->on_sale){
-                            return $fail('商品未上架');
+                        if(!$sku->product->on_sale){
+                            return $fail('商品已经下架了');
                         }
                         if($sku->stock==0){
-                            return $fail('商品已售完');
+                            return $fail('商品卖光啦！');
                         }
-                        //在检查库存时，我们需要获取用户想要购买的该 SKU 数量，我们可以通过匿名函数的第一个参数 $attribute
-                        //来获取当前 SKU 所在的数组索引，比如第一个 SKU 的 $attribute 就是 items.0.sku_id，
-                        //所以我们采用正则的方式将这个 0 提取出来，$this->input('items')[0]['amount'] 就是用户想购买的数量。
-                        //获取当前索引
                         preg_match('/items\.(\d+)\.sku_id/',$attribute,$m);
-                        $index=$m[0];
+                        $index=$m[1];
                         $amount=$this->items[$index]['amount'];
-                        if($amount>0 && $amount>$sku->stock){
-                            return $fail('库存不足');
+                        if($amount>0&&$amount>$sku->stock){
+                            return $fail('商品库存不足');
                         }
                     }
-                ],
             ],
-            'items.*.amount'=>'required|min:1|integer',
+
+            'items.*.amount'=>'required|integer|min:1'
         ];
         return $rules;
     }
