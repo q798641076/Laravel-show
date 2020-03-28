@@ -25,6 +25,16 @@ class OrdersController extends Controller
         return view('orders.index',compact('orders'));
     }
 
+    //订单详情
+    public function show(Order $order , Request $request)
+    {
+        $order=$request->user()
+                       ->orders()
+                       ->with(['orderItems.product','orderItems.product_sku'])
+                       ->findOrFail($order->id);
+        return view('orders.show',compact('order'));
+    }
+
     //订单提交逻辑
     public function store(OrderRequest $request)
     {

@@ -7,7 +7,7 @@
         <div class="col-md-10 offset-md-1">
             <div class="card">
                 <div class="card-header">
-                    订单列表
+                    <h4>订单列表</h4>
                 </div>
                 <div class="card-body">
                     @if (!count($orders))
@@ -59,7 +59,7 @@
                                                         <td class="amount">{{$item->amount}}</td>
                                                         @if ($index===0)
                                                             <td rowspan="{{$order->orderItems->count()}}" class="text-center total-amount">
-                                                                ￥{{$order->total_amount}}
+                                                                ￥{{number_format($order->total_amount,2)}}
                                                             </td>
                                                             <td rowspan="{{$order->orderItems->count()}}" class="text-center">
                                                                 @if ($order->paid_at)
@@ -77,7 +77,7 @@
                                                                 @endif
                                                             </td>
                                                             <td class="text-center" rowspan="{{$order->orderItems->count()}}">
-                                                                <a href="" class="btn btn-primary">查看订单</a>
+                                                                <a href="{{route('orders.show',$order->id)}}" class="btn btn-primary">查看订单</a>
                                                             </td>
                                                         @endif
 

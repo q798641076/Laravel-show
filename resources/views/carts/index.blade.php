@@ -124,7 +124,7 @@
         var priceTotal=0,total=0;
         $(document).ready(function()
         {
-
+            //删除购物车商品
             $('.remove').click(function(){
             // closest() 方法可以获取到匹配选择器的第一个祖先元素，在这里就是当前点击的 移除 按钮之上的 <tr> 标签
                 var id= $(this).closest('tr').data('id');
@@ -171,7 +171,7 @@
 
             // });
 
-
+                //动态获取价格
             $('input[name=select][type=checkbox]').change(function(){
 
                     price=$(this).closest('tr').find('.sku-price').data('price');
@@ -188,7 +188,7 @@
                     $('.priceTotal').html(priceTotal);
         })
 
-
+        //修改数量
             $('.amount').change(function(){
 
                 $(this).blur(function(){
@@ -252,8 +252,9 @@
 
                 //提交
                 axios.post("{{route('orders.store')}}",rad)
-                     .then(function(){
+                     .then(function(data){
                          swal('订单提交成功','','success')
+                         location.href='/orders/'+data.data.id;
                      },function(error){
                         if(error.response.status==422){
                             //422说明后台验证出了问题
