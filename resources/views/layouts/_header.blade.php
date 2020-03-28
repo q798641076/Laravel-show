@@ -43,6 +43,7 @@
               <a class="dropdown-item" href="#">个人信息</a>
               <a class="dropdown-item" href="{{route('user_addresses.index')}}">收货地址</a>
               <a class="dropdown-item" href="{{route('products.favoriteShow')}}">我的收藏</a>
+              <a class="dropdown-item" href="{{route('orders.index')}}">我的订单</a>
               <div class="dropdown-divider"></div>
 
                 {!! Form::open(['route'=>['logout'],'method'=>'post']) !!}

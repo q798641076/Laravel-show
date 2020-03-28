@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\UserAddress;
 use App\Models\Product;
 use App\Models\CartItem;
-
+use App\Models\Order;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -59,6 +59,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    //订单
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
 }

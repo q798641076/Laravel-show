@@ -1,0 +1,40 @@
+.orders-index-page {
+    .list-group-item {
+        font-size: 14px;
+        padding: 0;
+        border: none;
+        margin-bottom: 20px;
+        .product-info {
+            display: flex;
+            flex-direction: row;
+            .preview {
+                border: 1px solid #eee;
+                margin-right: 10px;
+                img {
+                    max-width: 100px;
+                    max-height: 100px;
+                }
+            }
+            .sku-title {
+                color: #bcbcbc;
+            }
+            .product-title>a {
+                text-decoration: none;
+                color: rgb(36, 35, 35);
+            }
+            .product-title,
+            .sku-title {
+                display: block;
+            }
+        }
+        .table {
+            margin: 0;
+            td[rowspan] {
+                border-left: 1px solid #bcbcbc;
+            }
+        }
+        .total-amount {
+            font-weight: bold;
+        }
+    }
+}

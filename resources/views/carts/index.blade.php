@@ -3,6 +3,7 @@
 @section('title','我的购物车')
 
 @section('content')
+<div class="row">
     <div class="col-md-10 offset-md-1">
         <div class="card">
             <div class="card-header">
@@ -115,6 +116,7 @@
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @section('scriptAfterJs')
