@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
+use App\Jobs\CloseOrder;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\ProductSku;
@@ -126,11 +127,15 @@ class OrdersController extends Controller
 
             //删除购物车
             $skuId=collect($items)->pluck('sku_id');
+
             $user->cartItems()->whereIn('product_sku_id',$skuId)->delete();
+
             return $order;
 
         });
+            //接下来我们需要在创建订单之后触发这个任务：
+            $this->dispatch(new CloseOrder($order, config('app.order_ttl')));
 
-        return $order;
+            return $order;
     }
 }
