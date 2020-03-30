@@ -61,6 +61,7 @@ class OrderRequest extends FormRequest
     public function attributes()
     {
         return [
+            'address_id'=>'地址',
             'items'=>'提交商品',
             'amount'=>'商品数量'
         ];
