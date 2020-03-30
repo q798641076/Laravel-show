@@ -45,6 +45,7 @@ class OrderServices
                 $orderItem->product_sku()->associate($sku);
                 $orderItem->product()->associate($sku->product_id);
                 $orderItem->save();
+                //计算总价
                 $total_amount+=$sku->price*$item['amount'];
                 //减库存：
                 if($sku->decreaseStock($item['amount'])<=0){

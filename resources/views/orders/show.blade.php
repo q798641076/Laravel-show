@@ -62,7 +62,7 @@
                             <div class="total-amount">
                                 订单状态：
                                 <div class="value">
-                                    @if ($order->paid)
+                                    @if ($order->paid_at)
                                     @if($order->refund_status === \App\Models\Order::REFUND_STATUS_PENDING)
                                     已支付
                                     @else
@@ -74,8 +74,17 @@
                                         未支付
                                     @endif
                                 </div>
-
                             </div>
+                            @if (!$order->paid_at)
+                                <div class="payment">
+                                    支付方式：
+                                    <div class="value">
+                                        <a href="{{route('payment.alipay',$order->id)}}"  >
+                                            <img src="{{asset('upload\images\alipay.jpg')}}" alt="" width="35px">
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
