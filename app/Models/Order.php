@@ -56,7 +56,7 @@ class Order extends Model
         'closed'=>'boolean',
         'reviewed'=>'boolean',
         'address'=>'json',
-        'ship_status'=>'json',
+        'ship_data'=>'json',
         'extra'=>'json'
     ];
 

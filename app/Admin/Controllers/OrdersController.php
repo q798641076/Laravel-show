@@ -2,15 +2,18 @@
 
 namespace App\Admin\Controllers;
 
+use App\Exceptions\InvalidRequestException;
+use App\Http\Requests\Request;
 use App\Models\Order;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
-
+use Illuminate\Foundation\Validation\ValidatesRequests;
 class OrdersController extends AdminController
 {
+    use ValidatesRequests;
     /**
      * Title for current resource.
      *
@@ -34,8 +37,9 @@ class OrdersController extends AdminController
 
         $grid->column('total_amount','总价格')->sortable();
 
-        $grid->ship_status('物流');
-
+        $grid->ship_status('物流状态')->display(function($value){
+            return Order::$shipStatusMap[$value];
+        });
         $grid->refund_status('退款状态')->display(function($value) {
             return Order::$refundStatusMap[$value];
         });
@@ -72,6 +76,37 @@ class OrdersController extends AdminController
         return $content
                ->header('查看订单')
                ->body(view('admin.orders.show',['order'=>Order::find($id)]));
+    }
+
+    //发货控制器
+    public function ship(Order $order,Request $request)
+    {
+        //如果订单未付款
+        if(!$order->paid_at){
+            throw new InvalidRequestException('订单未付款');
+        }
+        //如果订单已经发货了
+        if($order->ship_status!==Order::SHIP_STATUS_PENDING){
+            throw new InvalidRequestException('订单已发货');
+        }
+        //物流数据
+        $data=$this->validate($request,[
+            'express_company'=>'required',
+            'express_no'=>'required'
+        ],[],[
+            'express_company'=>'物流公司',
+            'express_no'=>'物流单号'
+        ]);
+        //更改订单数据
+        $order->update([
+            'ship_status'=>Order::SHIP_STATUS_DELIVERED,
+            //物流数据是json 所以直接传递$data就好
+            'ship_data'=>$data
+        ]);
+        //这里可以加一个发货通知
+
+        //返回上一层
+        return back();
     }
 
     /**

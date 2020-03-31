@@ -45,8 +45,33 @@
             @endforeach
             <tr>
                 <td>订单总金额：</td>
-                <td colspan="3" class="text-danger">￥{{$order->total_amount}}</td>
+                <td class="text-danger">￥{{$order->total_amount}}</td>
+                <td>发货状态：</td>
+                <td>{{\App\Models\Order::$shipStatusMap[$order->ship_status]}}</td>
             </tr>
+            <tr>
+                {{-- 发货 --}}
+                @if ($order->ship_status==\App\Models\Order::SHIP_STATUS_PENDING)
+                    <td colspan="4">
+                        {!! Form::open(['route'=>['admin.orders.ship',$order->id],'method'=>'POST','class'=>'form-inline']) !!}
+                        <div class="form-group @if($errors->has('express_company')) has-error @endif">
+                            {!! Form::label('express_company', '物流公司', ['class'=>'control-label']) !!}
+                            {!! Form::text('express_company', null, ['class'=>'form-control','placeholder'=>'物流公司','id'=>'express_company']) !!}
+                        </div>
+                        <div class="form-group @if($errors->has('express_no')) has-error @endif">
+                            {!! Form::label('express_no', '物流单号', ['class'=>'control-label']) !!}
+                            {!! Form::text('express_no', null, ['class'=>'form-control','placeholder'=>'物流单号','id'=>'express_no']) !!}
+                        </div>
+                        <button class="btn btn-success btn-sm" type="submit">发货</button>
+                        {!! Form::close() !!}
+                    </td>
+                @else
+                    <td>物流公司：</td>
+                    <td>{{$order->ship_data['express_company']}}</td>
+                    <td>物流单号：</td>
+                    <td>{{$order->ship_data['express_no']}}</td>
+                @endif
+            </td>
         </table>
     </div>
 </div>
