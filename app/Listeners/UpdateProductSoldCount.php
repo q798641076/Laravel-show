@@ -9,15 +9,6 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateProductSoldCount implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * Handle the event.

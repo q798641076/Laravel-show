@@ -60,7 +60,7 @@ class OrderPaidNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            
         ];
     }
 }

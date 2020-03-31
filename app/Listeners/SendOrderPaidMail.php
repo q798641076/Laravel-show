@@ -10,18 +10,6 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class SendOrderPaidMail implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-
-    protected $order;
-
-    public function __construct(Order $order)
-    {
-        $this->order=$order;
-    }
 
     /**
      * Handle the event.
