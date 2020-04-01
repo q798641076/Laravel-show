@@ -10,7 +10,7 @@ use App\Models\ProductSku;
 class OrderItem extends Model
 {
     protected $fillable=[
-        'amount','price','rating','review'
+        'amount','price','rating','review', 'reviewed_at'
     ];
 
     protected $dates = ['reviewed_at'];

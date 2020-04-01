@@ -36,6 +36,11 @@ Route::group(['middleware' => ['auth','verified']], function () {
     Route::post('orders','OrdersController@store')->name('orders.store');
     Route::get('orders','OrdersController@index')->name('orders.index');
     Route::get('orders/{order}','OrdersController@show')->name('orders.show');
+    //订单评论
+    Route::get('orders/{order}/review','OrdersController@review')->name('orders.review');
+    Route::post('orders/{order}/review','OrdersController@sendReview')->name('orders.review');
+    //确认收货
+    Route::post('orders/{order}','OrdersController@received')->name('orders.received');
 
     //支付
     Route::get('payment/{order}/alipay','PaymentController@payByAlipay')->name('payment.alipay');

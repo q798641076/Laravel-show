@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Events\OrderDelivered;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\Request;
 use App\Models\Order;
@@ -104,7 +105,7 @@ class OrdersController extends AdminController
             'ship_data'=>$data
         ]);
         //这里可以加一个发货通知
-
+        event(new OrderDelivered($order));
         //返回上一层
         return back();
     }

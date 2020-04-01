@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
             //notify_url服务器回调，return_url浏览器回调
             //值必须是完整的域名
             $config['return_url']=route('alipay.return');
-            $config['notify_url']='http://requestbin.net/r/190nqev1';
+            $config['notify_url']='http://requestbin.net/r/r4u8s7r4';
             //判断当前项目运行环境是否为线上环境
             if(app()->environment()!=='production'){
                 $config['mode']='dev';

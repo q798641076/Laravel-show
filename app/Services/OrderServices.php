@@ -36,7 +36,8 @@ class OrderServices
             $total_amount=0;
             foreach($items as $item){
                 $sku=ProductSku::findOrFail($item['sku_id']);
-                //用订单关联订单商品来创建
+                // 创建一个 OrderItem 并直接与当前订单关联 但不保存到数据库
+                //等同于 $orderItem=new OrderItem(), $orderItem->order()->associate($order)
                 $orderItem=$order->orderItems()->make([
                     'amount'=>$item['amount'],
                     'price'=>$sku->price,

@@ -68,7 +68,26 @@
                     <div class="tab-pane fade show active" id="nav-description" role="tabpanel" aria-labelledby="nav-description-tab">
                         {{$product->description}}
                     </div>
-                    <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">...</div>
+                    <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
+                        <table class="table table-border">
+                            <tr>
+                                <th>用户</th>
+                                <th>商品</th>
+                                <th>评分</th>
+                                <th>评价</th>
+                                <th>评价时间</th>
+                            </tr>
+                            @foreach ($reviews as $review)
+                                <tr>
+                                    <td>{{$review->order->user->name}}</td>
+                                    <td>{{$review->product_sku->title}}</td>
+                                    <td class="text-danger">{{str_repeat('★',$review->rating)}}{{str_repeat('☆',5-$review->rating)}}</td>
+                                    <td>{{$review->review}}</td>
+                                    <td>{{$review->reviewed_at}}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
                   </div>
             </div>
         </div>

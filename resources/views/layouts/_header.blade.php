@@ -27,12 +27,12 @@
             </li>
           </ul>
         <ul class="navbar-nav navbar-right">
-            <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link mt-1"><i class="fa fa-shopping-cart"></i></a></li>
          @guest
             <li class="nav-item"><a href="{{route('login')}}" class='nav-link'>登录</a></li>
 
             <li class="nav-item"><a href="{{route('register')}}" class='nav-link'>注册</a></li>
          @else
+         <li class="nav-item"><a href="{{route('cart.index')}}" class="nav-link mt-1"><i class="fa fa-shopping-cart"></i></a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img src="https://cdn.learnku.com/uploads/images/201709/20/1/PtDKbASVcz.png?imageView2/1/w/60/h/60"

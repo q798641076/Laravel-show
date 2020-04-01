@@ -78,6 +78,13 @@
                                                             </td>
                                                             <td class="text-center" rowspan="{{$order->orderItems->count()}}">
                                                                 <a href="{{route('orders.show',$order->id)}}" class="btn btn-primary">查看订单</a>
+                                                                <a href="{{route('orders.review',$order->id)}}" class="btn btn-success">
+                                                                    @if ($order->reviewed)
+                                                                        查看评价
+                                                                    @else
+                                                                        去评价
+                                                                    @endif
+                                                                </a>
                                                             </td>
                                                         @endif
 
