@@ -90,15 +90,22 @@
                                         未支付
                                     @endif
                                 </div>
-                                <div class="received">
+                            </div>
+                            @if ($order->extra['refusal_reason'])
+                                <div class="total-amount">
+                                    拒绝退款：
+                                    <div class="value">
+                                        {{$order->extra['refusal_reason']}}
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="received mt-2">
                                     @if ($order->ship_status===\App\Models\Order::SHIP_STATUS_DELIVERED)
                                         <button class="btn btn-success received-btn" >确认收货</button>
                                     @endif
                                     @if ($order->paid_at&&$order->refund_status===\App\Models\Order::REFUND_STATUS_PENDING)
                                         <button class="btn btn-danger refund-btn" >申请退款</button>
                                     @endif
-                                </div>
-
                             </div>
                             @if (!$order->paid_at)
                                 <div class="payment">

@@ -94,9 +94,9 @@
                 margin-bottom: 20px;
                 .value {
                     color: red;
-                    float: right;
-                    margin-right: 30px;
-                    margin-left: 150px;
+                    display: inline-block;
+                    width: 180px;
+                    padding-right: 30px;
                 }
             }
         }

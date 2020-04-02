@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Events\OrderDelivered;
 use App\Exceptions\InvalidRequestException;
+use App\Http\Requests\Admin\OperatedRefundRequest;
 use App\Http\Requests\Request;
 use App\Models\Order;
 use Encore\Admin\Controllers\AdminController;
@@ -108,6 +109,30 @@ class OrdersController extends AdminController
         event(new OrderDelivered($order));
         //返回上一层
         return back();
+    }
+
+    //退款申请
+    public function oreatedRefund(OperatedRefundRequest $request,Order $order)
+    {
+
+        if(!$order->paid_at){
+            throw new InvalidRequestException('订单未付款');
+        }
+        if($order->refund_status===Order::REFUND_STATUS_PENDING){
+            throw new InvalidRequestException('退款状态不符');
+        }
+        //同意退款
+        if($request->input('agree')){
+
+        }else{
+            $extra=$order->extra ? :[];
+            $extra['refusal_reason']=$request->input('reason');
+            $order->update([
+                'extra'=>$extra,
+                'refund_status'=>Order::REFUND_STATUS_PENDING
+            ]);
+        }
+        return [];
     }
 
     /**

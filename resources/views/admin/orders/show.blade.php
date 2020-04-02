@@ -71,7 +71,66 @@
                     <td>物流单号：</td>
                     <td>{{$order->ship_data['express_no']}}</td>
                 @endif
-            </td>
+            </tr>
+            {{-- 退款操作 --}}
+            @if ($order->refund_status!==\App\Models\Order::REFUND_STATUS_PENDING)
+            <tr>
+                <td>退款说明</td>
+                <td colspan="2">{{\App\Models\Order::$refundStatusMap[$order->refund_status]}}：{{$order->extra['reason']}}</td>
+                <td>
+                    @if ($order->refund_status===\App\Models\Order::REFUND_STATUS_APPLIED)
+                        <button class="btn btn-sm btn-success btn-agree">同意退款</button>
+                        <button class="btn btn-sm btn-danger btn-refusal">拒绝退款</button>
+                    @endif
+                </td>
+            </tr>
+            @endif
+
         </table>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        //Laravel-Admin 使用的 SweetAlert 版本与我们在前台使用的版本不一样，因此参数也不太一样
+        $('.btn-refusal').click(function(){
+            swal({
+                title:'拒绝退款理由',
+                input:'text',
+                showCancelButton:true,
+                confirmButtonText:'确认',
+                cancelButtonText:'取消',
+                showLoaderOnConfirm:true,
+                preConfirm:function(inputValue){
+                    if(!inputValue){
+                        swal('退款理由不呢为空','','error')
+                        return false;
+                    }
+                    //Laravel-Admin 没有 axios，使用 jQuery 的 ajax 方法来请求
+                    return $.ajax({
+                        url:"{{route('admin.orders.refund',$order->id)}}",
+                        type:"POST",
+                        data: JSON.stringify({ // 将请求变成 JSON 字符串
+                            agree:false,
+                            reason:inputValue,
+                            // 带上 CSRF Token
+                            // Laravel-Admin 页面里可以通过 LA.token 获得 CSRF Token
+                            _token:LA.token,
+                        }),
+                        contentType:'application/json' // 请求的数据格式为 JSON
+                    });
+                },
+                allowOutsideClick:false
+            }).then(function(ret){
+                //如果点了取消就返回
+                if(ret.dismiss=='cancel'){
+                    return ;
+                }
+                swal('操作成功','','success')
+                .then(function(){
+                    location.reload()
+                })
+            })
+        })
+    })
+</script>
