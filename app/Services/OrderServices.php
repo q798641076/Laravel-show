@@ -1,12 +1,14 @@
 <?php
 namespace App\Services;
 
+use App\Events\OrderReview;
 use App\Models\Order;
 use Illuminate\Support\Carbon;
 use App\Models\UserAddress;
 use App\Models\ProductSku;
 use App\Exceptions\InvalidRequestException;
 use App\Jobs\CloseOrder;
+use App\Models\OrderItem;
 
 class OrderServices
 {
@@ -69,5 +71,35 @@ class OrderServices
             dispatch(new CloseOrder($order,config('app.order_ttl')));
 
             return $order;
+    }
+
+    public function sendReview($order,$reviews)
+    {
+        if(!$order->paid_at){
+            throw new InvalidRequestException('订单未支付');
+        }
+        if($order->reviewed){
+            throw new InvalidRequestException('订单已评论');
+        }
+
+        \DB::transaction(function () use($reviews,$order){
+            //包含了整个订单下面的订单项 reviews
+
+            //循环每个商品下面的评价
+            foreach($reviews as $review){
+                $orderItem=OrderItem::findOrFail($review['id']);
+                $orderItem->update([
+                    'review'=>$review['review'],
+                    'rating'=>$review['rating'],
+                    'reviewed_at' => Carbon::now(),
+                ]);
+            }
+            //添加评论后，修改商品的评论数和评论平均分的事件
+            event(new OrderReview($order));
+            //将order修改为已评论
+            $orderItem->order()->update([
+                'reviewed'=>true
+            ]);
+        });
     }
 }

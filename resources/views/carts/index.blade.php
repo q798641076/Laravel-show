@@ -253,8 +253,9 @@
                 //提交
                 axios.post("{{route('orders.store')}}",rad)
                      .then(function(data){
-                         swal('订单提交成功','','success')
-                         location.href='/orders/'+data.data.id;
+                         swal('订单提交成功','','success').then(function(){
+                             location.href='/orders/'+data.data.id;
+                         })
                      },function(error){
                         if(error.response.status==422){
                             //422说明后台验证出了问题

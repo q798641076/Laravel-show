@@ -102,8 +102,9 @@
 
                 axios.post("/orders/{{$order->id}}/review",$rad)
                      .then(function(){
-                         swal('评论成功','','success');
-                         location.reload();
+                         swal('评论成功','','success').then(function(){
+                             location.reload();
+                         });
                      },function(error){
                         if(error.response.status===422){
                             $.each(error.response.data.errors,function(index,value){

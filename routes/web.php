@@ -41,7 +41,8 @@ Route::group(['middleware' => ['auth','verified']], function () {
     Route::post('orders/{order}/review','OrdersController@sendReview')->name('orders.review');
     //确认收货
     Route::post('orders/{order}','OrdersController@received')->name('orders.received');
-
+    //申请退款
+    Route::post('orders/{order}/refund','OrdersController@appliedRefund')->name('orders.refund');
     //支付
     Route::get('payment/{order}/alipay','PaymentController@payByAlipay')->name('payment.alipay');
     //浏览器回调

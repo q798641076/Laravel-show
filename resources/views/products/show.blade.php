@@ -69,7 +69,7 @@
                         {{$product->description}}
                     </div>
                     <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
-                        <table class="table table-border">
+                        <table class="table table-border table-striped">
                             <tr>
                                 <th>用户</th>
                                 <th>商品</th>

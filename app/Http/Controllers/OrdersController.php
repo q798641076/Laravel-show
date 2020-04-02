@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderReview;
 use App\Exceptions\InvalidRequestException;
+use App\Http\Requests\AppliedRefundRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
 use App\Jobs\CloseOrder;
@@ -42,11 +43,10 @@ class OrdersController extends Controller
     //订单提交逻辑
     public function store(OrderRequest $request,OrderServices $orderServices)
     {
-        $user=$request->user();
         $address=UserAddress::findOrFail($request->address_id);
-        $remark=$request->remark;
-        $items=$request->items;
-        $order=$orderServices->store($user,$address,$remark,$items);
+
+        $order=$orderServices->store($request->user(),$address,$request->remark,$request->items);
+
         return $order;
     }
 
@@ -78,36 +78,37 @@ class OrdersController extends Controller
         return view('orders.review',['order'=>$order->load(['orderItems.product','orderItems.product_sku'])]);
     }
     //发送评论
-    public function sendReview(Order $order, SendReviewRequest $request)
+    public function sendReview(Order $order, SendReviewRequest $request,OrderServices $orderServices)
+    {
+        $this->authorize('own',$order);
+
+        $orderServices->sendReview($order,$request->input('reviews'));
+
+        return [];
+    }
+
+    //申请退款
+    public function appliedRefund(AppliedRefundRequest $request,Order $order)
     {
         $this->authorize('own',$order);
 
         if(!$order->paid_at){
             throw new InvalidRequestException('订单未支付');
         }
-        if($order->reviewed){
-            throw new InvalidRequestException('订单已评论');
+        //证明已经在申请过程中了
+        if($order->refund_status!==Order::REFUND_STATUS_PENDING){
+            throw new InvalidRequestException('请勿重复申请');
         }
+        //把退款理由存入订单的extra字段
+        $extra=$order->extra ? :[];
 
-        \DB::transaction(function () use($request,$order){
-            //包含了整个订单下面的订单项
-            $reviews=$request->input('reviews');
-            //循环每个商品下面的评价
-            foreach($reviews as $review){
-                $orderItem=OrderItem::findOrFail($review['id']);
-                $orderItem->update([
-                    'review'=>$review['review'],
-                    'rating'=>$review['rating'],
-                    'reviewed_at' => Carbon::now(),
-                ]);
-            }
-            //添加评论后，修改商品的评论数和评论平均分的事件
-            event(new OrderReview($order));
-            //将order修改为已评论
-            $orderItem->order()->update([
-                'reviewed'=>true
-            ]);
-        });
+        $extra['reason']=$request->reason;
+
+        $order->update([
+            'extra'=>$extra,
+
+            'refund_status'=>Order::REFUND_STATUS_APPLIED
+        ]);
 
         return [];
     }
