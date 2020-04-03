@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\OrderDelivered;
 use App\Events\OrderPaid;
+use App\Events\OrderRefund;
 use App\Events\OrderReview;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -34,7 +35,11 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderReview::class=>[
             \App\Listeners\UpdateReviewInfo::class,
+        ],
+        OrderRefund::class=>[
+            \App\Listeners\AgreeRefund::class,
         ]
+
     ];
 
     /**

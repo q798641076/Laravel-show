@@ -91,7 +91,7 @@
                                     @endif
                                 </div>
                             </div>
-                            @if ($order->extra['refusal_reason'])
+                            @if (isset($order->extra['refusal_reason']))
                                 <div class="total-amount">
                                     拒绝退款：
                                     <div class="value">
@@ -99,6 +99,7 @@
                                     </div>
                                 </div>
                             @endif
+
                             <div class="received mt-2">
                                     @if ($order->ship_status===\App\Models\Order::SHIP_STATUS_DELIVERED)
                                         <button class="btn btn-success received-btn" >确认收货</button>
@@ -155,6 +156,9 @@
                     axios.post("/orders/{{$order->id}}/refund",{reason:input})
                         .then(function(){
                             swal('申请成功','','success')
+                            .then(function(){
+                                location.reload();
+                            })
                         },function(error){
                             swal('系统错误','','error')
                     })

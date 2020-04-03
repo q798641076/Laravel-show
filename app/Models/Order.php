@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\OrderItem;
+use Ramsey\Uuid\Uuid;
 
 class Order extends Model
 {
@@ -93,4 +94,14 @@ class Order extends Model
     }
 
 
+    public static function refundAvailableNo()
+    {
+        do{
+            //生成随机大概率不重复退款订单号
+            $no=Uuid::uuid4()->getHex();
+
+        }while(self::query()->where('refund_no',$no)->exists());
+
+        return $no;
+    }
 }

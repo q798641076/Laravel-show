@@ -103,7 +103,7 @@ class OrdersController extends Controller
         $extra=$order->extra ? :[];
 
         $extra['reason']=$request->reason;
-
+        unset($extra['refusal_reason']);
         $order->update([
             'extra'=>$extra,
 

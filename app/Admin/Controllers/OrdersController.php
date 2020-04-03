@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Events\OrderDelivered;
+use App\Events\OrderRefund;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\Admin\OperatedRefundRequest;
 use App\Http\Requests\Request;
@@ -121,9 +122,19 @@ class OrdersController extends AdminController
         if($order->refund_status===Order::REFUND_STATUS_PENDING){
             throw new InvalidRequestException('退款状态不符');
         }
+
         //同意退款
         if($request->input('agree')){
-
+            //清空拒绝退款的数据
+            $extra=$order->extra ? : [];
+            unset($extra['refusal_reason']);
+            $order->update([
+               'extra'=>$extra
+            ]);
+            //进行退款逻辑
+            $this->_agreeRefund($order);
+            //退款后通知
+            event(new OrderRefund($order));
         }else{
             $extra=$order->extra ? :[];
             $extra['refusal_reason']=$request->input('reason');
@@ -134,6 +145,49 @@ class OrdersController extends AdminController
         }
         return [];
     }
+
+    public function _agreeRefund(Order $order)
+    {
+        //判断支付方式
+        switch($order->payment_method)
+        {
+            case 'wechar':
+
+            break;
+
+            case 'alipay':
+            //退款单号
+            $no=Order::refundAvailableNo();
+
+            //调用refund方法，来执行退款
+                $ret=app('alipay')->refund([
+                    'out_trade_no'=>$order->no, //之前的订单流水号
+                    'refund_amount'=>$order->total_amount, //退款金额
+                    'out_request_no'=>$no   //退款流水号
+                    ]);
+
+                //根据支付宝的文档，如果返回值里有 sub_code 字段说明退款失败
+                if($ret->sub_code){
+                    //将退款失败保存到extra中
+                    $extra=$order->extra;
+                    $extra['refund_failed_code']=$ret->sub_code;
+                    $order->update([
+                        'refund_no'=>$no,
+                        'refund_status'=>Order::REFUND_STATUS_FAILED,
+                        'extra'=>$extra
+                    ]);
+                }else{
+                     // 将订单的退款状态标记为退款成功并保存退款订单号
+                    $order->update([
+                        'refund_no'=>$no,
+                        'refund_status'=>Order::REFUND_STATUS_SUCCESS
+                    ]);
+                }
+            break;
+            }
+
+        }
+
 
     /**
      * Make a form builder.
