@@ -15,6 +15,7 @@ class UserAddress extends Model
     //将这个属性转化为Carbon类属性
     protected $dateTime=['last_used_at'];
 
+
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');

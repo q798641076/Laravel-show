@@ -47,6 +47,7 @@ class CouponCode extends Model
         return $code;
     }
     //添加一个数据库属性
+    //转换模型到 数组 或 JSON 在控制器用访问器时需要
     protected $appends=['description'];
     //访问器
     public function getDescriptionAttribute()

@@ -35,5 +35,9 @@ Route::group([
 
     //优惠卷管理
     $router->get('coupons','CouponCodesController@index')->name('admin.coupons.index');
-
+    $router->get('coupons/create','CouponCodesController@create')->name('admin.coupons.create');
+    $router->post('coupons','CouponCodesController@store')->name('admin.coupons.store');
+    $router->get('coupons/{id}/edit','CouponCodesController@edit')->name('admin.coupons.edit');
+    $router->put('coupons/{id}','CouponCodesController@update')->name('admin.coupons.update');
+    $router->delete('coupons/{id}','CouponCodesController@delete')->name('admin.coupons.delete');
 });
