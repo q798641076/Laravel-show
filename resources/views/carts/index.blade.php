@@ -107,11 +107,24 @@
                             </div>
                         </div>
 
+                         {{-- 优惠码 --}}
+                        <div class="form-group row">
+                            <label for="coupon_code" class="col-form-label col-sm-3 text-right">优惠码</label>
+                            <div class="col-sm-5">
+                                <input type="text" name='coupon_code' id='coupon_code' placeholder="请输入优惠码" class="form-control ">
+                                <span class="coupon-info" style="font-size:13px;color:#cbcbcb"></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-success " id="coupon-check">检查</button>
+                                <button type="button" class="btn btn-danger" id="coupon-cancel" style="display:none">取消</button>
+                            </div>
 
-                    {!! Form::close() !!}
-                    <div class="form-group col-md-6 text-right">
-                            <button class="btn btn-success" id="btn-create-order" >去付款</button>
                         </div>
+                    {!! Form::close() !!}
+
+                    <div class="form-group col-md-6 text-right">
+                        <button class="btn btn-success" id="btn-create-order" >去付款</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -269,6 +282,43 @@
 
                      })
             })
+
+            $('#coupon-check').click(function(){
+                $code=$('input[name=coupon_code]').val();
+                if(!$code){
+                    swal('请输入优惠码','','error');
+                    return;
+                }
+                axios.get('/coupons/'+$code)
+                    .then(function(response){
+                        //获取优惠卷信息
+                       $('.coupon-info').html(response.data.description);
+                       //禁用文本框
+                       $('input[name=coupon_code]').prop('disabled',true);
+                       //开启取消按钮
+                       $('#coupon-cancel').show();
+                       //隐藏检查按钮
+                       $('#coupon-check').hide();
+                    },function(error){
+                        if(error.response.status===403){
+                            swal(error.response.data.msg,'','error');
+                        } else if(error.response.status===404) {
+                            swal('优惠码不存在','','error');
+                        } else{
+                            swal('服务器错误','','error');
+                        }
+                    })
+            })
+
+            $('#coupon-cancel').click(function(){
+                $('input[name=coupon_code]').prop('disabled',false);
+                $('.coupon-info').html('');
+                //隐藏取消按钮
+                $('#coupon-cancel').hide();
+                //开启检查按钮
+                $('#coupon-check').show();
+            })
+
 })
     </script>
 @endsection

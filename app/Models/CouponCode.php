@@ -28,7 +28,7 @@ class CouponCode extends Model
         'enabled',
     ];
 
-    protected $date=[
+    protected $dates=[
         'not_before',
         'not_after'
     ];
