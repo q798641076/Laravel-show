@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\OrderItem;
 use Ramsey\Uuid\Uuid;
+use App\Models\CouponCode;
 
 class Order extends Model
 {
@@ -103,5 +104,10 @@ class Order extends Model
         }while(self::query()->where('refund_no',$no)->exists());
 
         return $no;
+    }
+
+    public function coupon_code_id()
+    {
+        return $this->belongsTo(CouponCode::class,'coupon_code_id');
     }
 }
