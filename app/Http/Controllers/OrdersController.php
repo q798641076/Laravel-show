@@ -9,6 +9,7 @@ use App\Http\Requests\OrderRequest;
 use App\Http\Requests\SendReviewRequest;
 use App\Jobs\CloseOrder;
 use App\Models\CartItem;
+use App\Models\CouponCode;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductSku;
@@ -43,9 +44,18 @@ class OrdersController extends Controller
     //订单提交逻辑
     public function store(OrderRequest $request,OrderServices $orderServices)
     {
+        //这里要给个值，不然会报错
+        $couponCode=null;
+
+        if($code=$request->input('coupon_code')){
+
+            $couponCode=CouponCode::query()->where('code',$code)->first();
+        }
+
         $address=UserAddress::findOrFail($request->address_id);
 
-        $order=$orderServices->store($request->user(),$address,$request->remark,$request->items);
+
+        $order=$orderServices->store($request->user(),$address,$request->remark,$request->items,$couponCode);
 
         return $order;
     }

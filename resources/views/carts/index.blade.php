@@ -110,11 +110,11 @@
                          {{-- 优惠码 --}}
                         <div class="form-group row">
                             <label for="coupon_code" class="col-form-label col-sm-3 text-right">优惠码</label>
-                            <div class="col-sm-5">
+                            <div class="col-sm-7">
                                 <input type="text" name='coupon_code' id='coupon_code' placeholder="请输入优惠码" class="form-control ">
                                 <span class="coupon-info" style="font-size:13px;color:#cbcbcb"></span>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <button type="button" class="btn btn-success " id="coupon-check">检查</button>
                                 <button type="button" class="btn btn-danger" id="coupon-cancel" style="display:none">取消</button>
                             </div>
@@ -239,7 +239,8 @@
                     var rad={
                         address_id:$('#order-address').find('select[name=address]').val(),
                         remark:$('#order-remark').find('textarea[name=remark]').val(),
-                        items:[]
+                        items:[],
+                        coupon_code:$('input[name=coupon_code]').val()
                     }
 
                     $('table tr[data-id]').each(function(){
@@ -276,7 +277,10 @@
                             html=value[0]
                            })
                            swal({title:html,icon:'error'})
-                        }else{
+                        }else if(error.response.status==403){
+                            swal(error.response.data[0],'','error')
+                        }
+                        else{
                             swal('系统错误','','error')
                         }
 
@@ -289,7 +293,8 @@
                     swal('请输入优惠码','','error');
                     return;
                 }
-                axios.get('/coupons/'+$code)
+                //encodeURIComponent要是生成的code有/符号的话会影响查询，所以这个函数可以转义特殊字符
+                axios.get('/coupons/'+encodeURIComponent($code))
                     .then(function(response){
                         //获取优惠卷信息
                        $('.coupon-info').html(response.data.description);
@@ -300,8 +305,13 @@
                        //隐藏检查按钮
                        $('#coupon-check').hide();
                     },function(error){
+
                         if(error.response.status===403){
-                            swal(error.response.data.msg,'','error');
+                            var html;
+                            $.each(error.response.data,function(index,value){
+                                html=value;
+                            })
+                            swal(html,'','error');
                         } else if(error.response.status===404) {
                             swal('优惠码不存在','','error');
                         } else{

@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Events\OrderReview;
+use App\Exceptions\CouponCodeUnavailableException;
 use App\Models\Order;
 use Illuminate\Support\Carbon;
 use App\Models\UserAddress;
@@ -12,10 +13,16 @@ use App\Models\OrderItem;
 
 class OrderServices
 {
-    public function store($user, $address, $remark, $items)
+    public function store($user, $address, $remark, $items, $couponCode)
     {
+        //如果优惠卷存在
+        if($couponCode){
+            //现在还不需要进行订单金额的判断
+            $couponCode->checkCouponCode();
+        }
+
          //开启事务回滚系统
-         $order=\DB::transaction(function () use($user,$address,$remark,$items){
+         $order=\DB::transaction(function () use($user,$address,$remark,$items,$couponCode){
             //找到地址数据表，将地址数据表的内容以json的形式填入我们订单下面的地址
             // 更新此地址的最后使用时间
             $address->update(['last_used_at' => Carbon::now()]);
@@ -55,6 +62,22 @@ class OrderServices
                     throw new InvalidRequestException('库存不足');
                 }
             }
+
+            if($couponCode){
+                //进行订单金额判断
+                $couponCode->checkCouponCode($total_amount);
+                //折扣后的金额
+                $total_amount=$couponCode->getAdjustedPrice($total_amount);
+                //使用量进行验证
+                if($couponCode->couponCount()<=0){
+
+                    throw new CouponCodeUnavailableException('优惠卷被抢光了');
+                }
+                //最后订单关联优惠卷
+                $order->couponCode()->associate($couponCode);
+            }
+
+
             $order->update(['total_amount'=>$total_amount]);
 
             //删除购物车

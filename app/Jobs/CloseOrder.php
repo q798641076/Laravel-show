@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\CouponCode;
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,8 +48,10 @@ class CloseOrder implements ShouldQueue
         foreach($this->order->orderItems as $item){
             $item->product_sku->addStock($item->amount);
         }
+        //恢复优惠卷库存
+        $this->order->couponCode->CouponCount(false);
 
         });
-        
+
     }
 }

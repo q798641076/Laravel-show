@@ -106,8 +106,8 @@ class Order extends Model
         return $no;
     }
 
-    public function coupon_code_id()
+    public function couponCode()
     {
-        return $this->belongsTo(CouponCode::class,'coupon_code_id');
+        return $this->belongsTo(CouponCode::class);
     }
 }

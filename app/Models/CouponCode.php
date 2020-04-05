@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Exceptions\CouponCodeUnavailableException;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -60,5 +62,48 @@ class CouponCode extends Model
            return $str.'减'.str_replace('.00','',$this->value);
         }
         return $str.'优惠'.str_replace('.00','',$this->value).'%';
+    }
+
+    //检查优惠卷
+    public function checkCouponCode($total_amount=null)
+    {
+        if(!$this->enabled){
+            throw new CouponCodeUnavailableException('优惠卷不存在');
+        }
+        if($this->total<=$this->used){
+            throw new CouponCodeUnavailableException('优惠卷已派完');
+        }
+        if($this->not_before && $this->not_before->gt(Carbon::now())){
+            throw new CouponCodeUnavailableException('未到使用期间');
+        }
+        if($this->not_after && $this->not_after->lt(Carbon::now())){
+            throw new CouponCodeUnavailableException('优惠卷已过期');
+        }
+
+        if($total_amount && $total_amount<$this->min_amount){
+            throw new CouponCodeUnavailableException('未达到使用金额');
+        }
+    }
+
+    //减增优惠卷库存
+    public function couponCount($count=true)
+    {
+        //默认是true，进行使用量++
+        if($count){
+            //这样可以符和高并发环境
+            return $this->where('id',$this->id)->where('used','<',$this->total)->increment('used');
+        }
+        //否则使用量--
+        return $this->decrement('used');
+    }
+
+    //计算折扣后的金额
+    public function getAdjustedPrice($total_amount)
+    {
+        //max()取最大值，避免金额小于0.01
+        if($this->type===self::TYPE_FIXED){
+            return max('0.01',$total_amount-$this->value);
+        }
+        return $total_amount-$total_amount*$this->value/100;
     }
 }
