@@ -18,7 +18,7 @@ class OrderServices
         //如果优惠卷存在
         if($couponCode){
             //现在还不需要进行订单金额的判断
-            $couponCode->checkCouponCode();
+            $couponCode->checkCouponCode($user);
         }
 
          //开启事务回滚系统

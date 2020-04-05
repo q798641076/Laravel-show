@@ -49,7 +49,11 @@ class CloseOrder implements ShouldQueue
             $item->product_sku->addStock($item->amount);
         }
         //恢复优惠卷库存
-        $this->order->couponCode->CouponCount(false);
+        if($this->order->couponCode){
+
+            $this->order->couponCode->CouponCount(false);
+
+        }
 
         });
 

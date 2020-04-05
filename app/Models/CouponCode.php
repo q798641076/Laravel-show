@@ -65,7 +65,7 @@ class CouponCode extends Model
     }
 
     //检查优惠卷
-    public function checkCouponCode($total_amount=null)
+    public function checkCouponCode($user, $total_amount=null)
     {
         if(!$this->enabled){
             throw new CouponCodeUnavailableException('优惠卷不存在');
@@ -82,6 +82,23 @@ class CouponCode extends Model
 
         if($total_amount && $total_amount<$this->min_amount){
             throw new CouponCodeUnavailableException('未达到使用金额');
+        }
+
+        $firstCoupon=Order::query()
+                    ->where('user_id',$user->id)
+                    ->where('coupon_code_id',$this->id)
+                    ->where(function($query){
+                        $query->where(function($query){
+                            $query->whereNull('paid_at')
+                                  ->where('closed',false);
+                        })->whereOr(function($query){
+                            $query->whereNotNull('paid_at')
+                                  ->where('refund_status','!=',Order::REFUND_STATUS_SUCCESS);
+                        });
+                    })->exists();
+
+        if($firstCoupon){
+            throw new CouponCodeUnavailableException('不可以重复使用优惠卷');
         }
     }
 
