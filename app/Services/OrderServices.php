@@ -65,7 +65,7 @@ class OrderServices
 
             if($couponCode){
                 //进行订单金额判断
-                $couponCode->checkCouponCode($total_amount);
+                $couponCode->checkCouponCode($user,$total_amount);
                 //折扣后的金额
                 $total_amount=$couponCode->getAdjustedPrice($total_amount);
                 //使用量进行验证
