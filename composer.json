@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "^6.1",
         "mews/captcha": "~3.0",
+        "overtrue/easy-sms": "^1.1",
         "overtrue/laravel-lang": "~3.0",
         "yansongda/pay": "^2.9"
     },
@@ -31,7 +32,8 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "secure-http": false
     },
     "extra": {
         "laravel": {

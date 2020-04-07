@@ -71,10 +71,13 @@
                             @endif
                         </div>
                         <div class="order-summary text-right">
-                            <div class="total-amount">
+                            @if ($order->couponCode)
+                                <div class="total-amount">
                                 优惠信息：
                                 <div class="value">{{$order->couponCode->description}}</div>
-                            </div>
+                                </div>
+                            @endif
+
                             <div class="total-amount">
                                 总价：
                                 <div class="value">￥{{number_format($order->total_amount,2)}}</div>

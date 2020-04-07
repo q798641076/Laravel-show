@@ -110,11 +110,11 @@
                          {{-- 优惠码 --}}
                         <div class="form-group row">
                             <label for="coupon_code" class="col-form-label col-sm-3 text-right">优惠码</label>
-                            <div class="col-sm-7">
+                            <div class="col-sm-6">
                                 <input type="text" name='coupon_code' id='coupon_code' placeholder="请输入优惠码" class="form-control ">
                                 <span class="coupon-info" style="font-size:13px;color:#cbcbcb"></span>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-3">
                                 <button type="button" class="btn btn-success " id="coupon-check">检查</button>
                                 <button type="button" class="btn btn-danger" id="coupon-cancel" style="display:none">取消</button>
                             </div>

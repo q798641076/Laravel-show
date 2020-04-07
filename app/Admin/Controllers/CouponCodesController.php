@@ -130,7 +130,12 @@ class CouponCodesController extends AdminController
 
         $form->number('total', __('发放总数'))->rules('required|integer|min:1');
 
-        $form->text('min_amount', __('最低金额'))->rules('required|numeric|min:1');
+        $form->text('min_amount', __('最低金额'))->rules(function(){
+            if(request()->input('type')===CouponCode::TYPE_FIXED){
+                return 'required|numeric|min:1';
+            }
+            return 'required|numeric';
+        });
 
         $form->datetime('not_before', __('在这之后有效'));
 
