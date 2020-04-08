@@ -5,6 +5,7 @@ namespace App\Providers;
 use Monolog\Logger;
 use Illuminate\Support\ServiceProvider;
 use Yansongda\Pay\Pay;
+use Illuminate\Http\Resources\Json\Resource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -55,5 +56,8 @@ class AppServiceProvider extends ServiceProvider
     {
         //为Order模型注册Observe
         \App\Models\Order::observe(\App\Observers\OrderObserver::class);
+
+        //去掉 data 这一层包裹。
+        Resource::withoutWrapping();
     }
 }
