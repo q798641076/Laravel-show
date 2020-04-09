@@ -26,6 +26,17 @@ Route::prefix('v1')->namespace('Api')->name('api.v1')->group(function(){
         Route::post('users','UserController@store')->name('.users.store');
         //图片验证码
         Route::post('captcha','CaptchasController@store')->name('.captcha.store');
+
+        //第三方登录
+        Route::post('socials/{social_type}/authorizations','AuthorizationsController@socialStore')
+              ->where('social_type','weixin')
+              ->name('.authorizations.socialStore');
+        //用户登录
+        Route::post('authorizations','AuthorizationsController@store')->name('.authorizations.store');
+        //刷新用户jwt
+        Route::put('authorizations/current','AuthorizationsController@update')->name('.authorizations.update');
+        //删除用户jwt
+        Route::delete('authorizations/current','AuthorizationsController@destroy')->name('.authorizations.destroy');
     });
 
     //(访问相关)

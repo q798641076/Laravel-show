@@ -29,5 +29,11 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    //配置微信授权登录信息
+    'weixin' => [
+        'client_id'=>env('WEIXIN_APP_ID'),
+        'client_secret'=>env('WEIXIN_APP_SERCET'),
+        'redirect'=>env('WEIXIN_REDIRECT_URL')
+    ]
 
 ];

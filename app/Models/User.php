@@ -10,9 +10,23 @@ use App\Models\UserAddress;
 use App\Models\Product;
 use App\Models\CartItem;
 use App\Models\Order;
-class User extends Authenticatable implements MustVerifyEmail
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use Notifiable;
+
+    //返回的是我们用户的id
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    //需要额外再JWT载荷中增加自定义内容
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','phone'
+        'name', 'email', 'password','phone','weixin_openid','weixin_unionid'
     ];
 
     /**

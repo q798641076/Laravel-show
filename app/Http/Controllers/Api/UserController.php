@@ -28,7 +28,7 @@ class UserController extends Controller
         $user=User::create([
             'name'=>$request->name,
             'phone'=>$key['phone'],
-            'password'=>$request->password
+            'password'=>bcrypt($request->password)
         ]);
 
         Cache::forget($request->verification_key);
