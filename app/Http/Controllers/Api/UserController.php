@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
+    //手机注册
     public function store(UserRequest $request)
     {
         $key=Cache::get($request->verification_key);
@@ -34,5 +35,10 @@ class UserController extends Controller
         Cache::forget($request->verification_key);
 
         return new UserResource($user);
+    }
+
+    public function me(Request $request)
+    {
+        return new UserResource($request->user());
     }
 }

@@ -21,6 +21,7 @@
         "overtrue/easy-sms": "^1.1",
         "overtrue/laravel-lang": "~3.0",
         "socialiteproviders/weixin": "^4.0",
+        "spatie/laravel-query-builder": "^2.8",
         "tymon/jwt-auth": "1.0.0-rc.5",
         "yansongda/pay": "^2.9"
     },

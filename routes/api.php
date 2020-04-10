@@ -40,7 +40,25 @@ Route::prefix('v1')->namespace('Api')->name('api.v1')->group(function(){
     });
 
     //(访问相关)
-    Route::middleware('throttle:'.config('api.rate_limits.access'))->group(function(){
+    Route::middleware('throttle:'.config('api.rate_limits.sign'))->group(function(){
+
+        Route::middleware('auth:api')->group(function(){
+            //获取登录用户信息
+            Route::get('user','UserController@me')->name('.user');
+            //地址增删改
+            Route::get('addresses','UserAddressesController@index')->name('.addresses.index');
+            Route::post('addresses','UserAddressesController@store')->name('.address.store');
+            Route::put('addresses/{address}','UserAddressesController@update')->name('.address.update');
+            Route::delete('addresses/{address}','UserAddressesController@delete')->name('.address.delete');
+            //获取商品信息
+            Route::get('products','ProductsController@index')->name('.products.index');
+            Route::get('products/{product}','ProductsController@show')->name('.products.show');
+            //收藏商品
+            Route::post('products/{product}/favorite','ProductsController@favorite')->name('.products.favorite');
+            //取消收藏
+            Route::delete('products/{product}/favorite','ProductsController@undoFavorite')->name('.products.undoFavorite');
+        });
+
 
     });
 });
