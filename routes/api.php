@@ -57,6 +57,12 @@ Route::prefix('v1')->namespace('Api')->name('api.v1')->group(function(){
             Route::post('products/{product}/favorite','ProductsController@favorite')->name('.products.favorite');
             //取消收藏
             Route::delete('products/{product}/favorite','ProductsController@undoFavorite')->name('.products.undoFavorite');
+
+            //购物车
+            Route::post('carts/add','CartsController@addCart')->name('.carts.add');
+            Route::get('carts','CartsController@index')->name('.carts.index');
+            Route::delete('carts/{skuId}','CartsController@destroy')->name('.carts.destroy');
+            Route::patch('carts/{skuId}','CartsController@update')->name('.carts.update');
         });
 
 
