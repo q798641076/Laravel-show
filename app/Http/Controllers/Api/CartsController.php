@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AddCartRequest;
 use App\Http\Resources\CartItemResource;
 use App\Models\CartItem;
+use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -14,9 +15,9 @@ class CartsController extends Controller
     //购物车列表
     public function index(Request $request)
     {
-        $cartItems=$request->user()->cartItems()->with('productSku.product')->paginate();
+        $cartItems=$request->user()->cartItems()->with('productSku.product')->get();
 
-        return CartItemResource::collection($cartItems);
+        return ['items'=>CartItemResource::collection($cartItems),'address'=>$request->user()->addresses];
     }
 
     //添加购物车

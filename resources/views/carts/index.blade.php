@@ -312,6 +312,7 @@
                                 html=value;
                             })
                             swal(html,'','error');
+                            console.log(error.response.data);
                         } else if(error.response.status===404) {
                             swal('优惠码不存在','','error');
                         } else{

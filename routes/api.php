@@ -63,6 +63,14 @@ Route::prefix('v1')->namespace('Api')->name('api.v1')->group(function(){
             Route::get('carts','CartsController@index')->name('.carts.index');
             Route::delete('carts/{skuId}','CartsController@destroy')->name('.carts.destroy');
             Route::patch('carts/{skuId}','CartsController@update')->name('.carts.update');
+
+            //订单
+            Route::post('orders','OrdersController@store')->name('.orders.store');
+            Route::get('orders','OrdersController@index')->name('.orders.index');
+            Route::get('orders/{order}','OrdersController@show')->name('.orders.show');
+
+            //优惠卷
+            Route::get('coupons/{code}','CouponCodesController@show')->name('.coupons.show');
         });
 
 
