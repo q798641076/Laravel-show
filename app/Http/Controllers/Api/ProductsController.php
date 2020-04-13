@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -41,6 +42,7 @@ class ProductsController extends Controller
         if(!$product->on_sale){
             throw new InvalidRequestException('商品已经下架了');
         }
+
         //预加载，避免N+1;
         $product=QueryBuilder::for(Product::class)
                 ->allowedIncludes('skus')

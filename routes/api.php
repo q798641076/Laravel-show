@@ -71,6 +71,16 @@ Route::prefix('v1')->namespace('Api')->name('api.v1')->group(function(){
 
             //优惠卷
             Route::get('coupons/{code}','CouponCodesController@show')->name('.coupons.show');
+
+            //评价
+            Route::get('orders/{order}/review','OrdersController@review')->name('.orders.review');
+            Route::post('orders/{order}/review','OrdersController@sendReview')->name('.orders.sendReview');
+
+            //确认收获
+            Route::post('orders/{order}/received','OrdersController@received')->name('.orders.received');
+
+            //申请退款
+            Route::post('orders/{order}/refund','OrdersController@refund')->name('.orders.refund');
         });
 
 

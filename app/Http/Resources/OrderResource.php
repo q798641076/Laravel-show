@@ -17,7 +17,9 @@ class OrderResource extends JsonResource
         $data=parent::toArray($request);
 
         $data['order_items']=OrderItemResource::collection($this->whenLoaded('orderItems'));
+
         $data['coupon_code']=new CouponCodeResource($this->whenLoaded('couponCode'));
+
         return $data;
     }
 }

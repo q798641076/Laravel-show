@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\OrderItem;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Product;
 
@@ -31,6 +32,17 @@ class ProductResource extends JsonResource
 
         $data['image']=Product::find($this->id)->image_url;
 
+        if(isset(request()->product->id)){
+        $orderItems=OrderItem::query()
+                              ->with(['order.user','product_sku'])
+                              ->whereNotNull('reviewed_at')
+                              ->where('product_id',$this->id)
+                              ->whereHas('order',function($query){
+                                $query->whereNotNull('paid_at');
+                              })
+                              ->get();
+        $data['reviews']=OrderItemResource::collection($orderItems);
+        }
         return $data;
     }
 }

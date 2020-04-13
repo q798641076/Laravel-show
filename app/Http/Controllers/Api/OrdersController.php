@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\OrderReview;
 use App\Exceptions\CouponCodeUnavailableException;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\ApplyRefundRequest;
 use App\Http\Requests\Api\OrderRequest;
+use App\Http\Requests\Api\SendReviewRequest;
+use App\Http\Resources\OrderItemResource;
 use App\Http\Resources\OrderResource;
 use App\Jobs\CloseOrder;
 use App\Models\CartItem;
@@ -14,6 +18,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductSku;
 use App\Models\UserAddress;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -114,5 +119,92 @@ class OrdersController extends Controller
         $this->dispatch(new CloseOrder($order,config('app.order_ttl')));
 
         return response()->json(['msg'=>'创建成功'],200);
+    }
+
+    //评论页面
+    public function review(Order $order,Request $request)
+    {
+        if(!$order->paid_at){
+            return response()->json('该订单未支付',403);
+        }
+        // if($order->ship_status!=Order::SHIP_STATUS_RECEIVED){
+        //     return response()->json('确认收货后才能评价',403);
+        // }
+        // if($order->refund_status===Order::REFUND_STATUS_SUCCESS){
+        //     return response()->json('您已经退款了',403);
+        // }
+
+        return new OrderResource($order->load(['orderItems.product','orderItems.product_sku']));
+    }
+
+    //提交评价
+    public function sendReview(SendReviewRequest $request,Order $order)
+    {
+        $this->authorize('own',$order);
+
+        if(!$order->paid_at){
+            return response()->json('该订单未支付',403);
+        }
+        if($order->reviewed){
+            return response()->json('该订单已评价',403);
+        }
+
+        $reviews=$request->reviews;
+
+        \DB::transaction(function () use($reviews,$order){
+
+            foreach($reviews as $review){
+                $orderItem=OrderItem::findOrFail($review['id']);
+
+                $orderItem->update([
+                    'rating'      =>$review['rating'],
+                    'review'      =>$review['review'],
+                    'reviewed_at' =>Carbon::now(),
+                ]);
+            }
+            //触发商品的平均分
+            event(new OrderReview($order));
+
+            //修改订单为已评价
+            $order->update(['reviewed'=>true]);
+        });
+        return new OrderResource($order->load(['orderItems.product','orderItems.product_sku']));
+    }
+
+    //确认收货
+    public function received(Order $order)
+    {
+        $this->authorize('own',$order);
+
+        if(!$order->paid_at){
+            return response()->json('订单未付款',403);
+        }
+        if($order->ship_status!==Order::SHIP_STATUS_DELIVERED){
+            return response()->json('检查订单物流状态',403);
+        }
+        $order->update(['ship_status'=>Order::SHIP_STATUS_RECEIVED]);
+
+        return response()->json('收货成功',200);
+    }
+
+    //申请退款
+    public function refund(Order $order , ApplyRefundRequest $request)
+    {
+        if(!$order->paid_at){
+            return response()->json('订单未付款',403);
+        }
+        if($order->refund_status!==Order::REFUND_STATUS_PENDING){
+            return response()->json('请勿重复操作',403);
+        }
+        $extra=$order->extra ?:[];
+
+        $extra['reason']=$request->reason;
+
+        $order->update([
+            'refund_status'=>Order::REFUND_STATUS_APPLIED,
+            'extra'        =>$extra
+            ]);
+
+        return response()->json('申请成功',200);
     }
 }
